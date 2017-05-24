@@ -12,6 +12,7 @@ public class Article {
     private String email;
     private int hit;
     private Date regdate;
+    
 	public int getArticleNo() {
 		return articleNo;
 	}
