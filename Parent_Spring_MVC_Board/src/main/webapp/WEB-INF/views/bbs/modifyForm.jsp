@@ -49,7 +49,7 @@
 <h1>${boardNm }${param }</h1>
 <div id="bbs">
 <h2>수정</h2>
-<form id="modifyForm" action="modify" method="post" onsubmit="return check()">
+<form id="modifyForm" action="modify" method="post" enctype="multipart/form-data" onsubmit="return check()">
 <p style="margin: 0;padding: 0;">
     <input type="hidden"  name="articleNo" value="${param.articleNo }" />
     <input type="hidden"  name="boardCd" value="${param.boardCd }" />
@@ -57,17 +57,23 @@
      <input type="hidden" name="searchWord" value="${param.searchWord }" />
 </p>
 <table id="write-form">
-<tr>
-    <td>제목</td>
-    <td><input type="text" name="title" size="50" value="${thisArticle.title }" /></td>
-</tr>
-<tr>
-    <td colspan="2">
-        <textarea name="content" rows="17">${thisArticle.content }</textarea>
-    </td>
-</tr>
- 
+	<tr>
+	    <td>제목</td>
+	    <td><input type="text" name="title" size="50" value="${thisArticle.title }" /></td>
+	</tr>
+	<tr>
+	   <td colspan="2">
+	       <textarea name="content" rows="17">${thisArticle.content }</textarea>
+	   </td>
+	</tr>
+	<tr>
+	 <td>파일첨부</td>
+	 <td><input type="file" name="upload" multiple/></td>
+	</tr>
 </table>
+
+
+
 <div style="text-align: center;padding-bottom: 15px;">
     <input type="submit" value="전송" />
     <input type="button" value="상세보기" onclick="goView()" />

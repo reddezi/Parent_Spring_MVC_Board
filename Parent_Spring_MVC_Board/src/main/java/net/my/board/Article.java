@@ -12,7 +12,22 @@ public class Article {
     private String email;
     private int hit;
     private Date regdate;
+    private int attachFileNum; // 파일첨부
+    private int commentNum; // 댓글 개수
     
+    
+	public int getCommentNum() {
+		return commentNum;
+	}
+	public void setCommentNum(int commentNum) {
+		this.commentNum = commentNum;
+	}
+	public int getAttachFileNum() {
+		return attachFileNum;
+	}
+	public void setAttachFileNum(int attachFileNum) {
+		this.attachFileNum = attachFileNum;
+	}
 	public int getArticleNo() {
 		return articleNo;
 	}

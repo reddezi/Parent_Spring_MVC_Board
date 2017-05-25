@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.my.board.Article;
+import net.my.board.AttachFile;
+import net.my.board.Comment;
 
 public interface BoardMapper {
 	/*
@@ -51,5 +53,51 @@ public interface BoardMapper {
     * 다음글 보기
     */
     public Article getNextArticle(HashMap<String, String> hashmap);
+    
+    /*
+     * 가장 최근 게시물 가져오기
+     */
+    public Article getNewArticle();
+    
+    /*
+     * 첨부파일 추가
+     */
+    public void insertAttachFile(AttachFile attachFile);
+
+    /*
+     *  게시글의 첨부파일 리스트
+     */
+    public ArrayList<AttachFile> getAttachFileList(int articleNo);
+    
+    /*
+     * 첨부 파일 삭제 
+     */
+    public void deleteFile(Integer attachFileNo);
+    
+    /*
+     * 덧글쓰기
+     */
+    public void insertComment(Comment comment); 
+    
+    /*
+     * 덧글수정
+     */
+    public void updateComment(Comment comment);
+    
+    /*
+     * 덧글삭제
+     */
+    public void deleteComment(int commentNo);
+    
+    /*
+     * 덧글 가져오기
+     */
+    public Comment getComment(int commentNo);
+    
+    /*
+     * 게시글의 덧글리스트 구하기
+     */
+    public ArrayList<Comment> getCommentList(int articleNo);
+   
     
 }

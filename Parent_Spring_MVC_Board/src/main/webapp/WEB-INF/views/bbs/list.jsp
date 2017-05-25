@@ -63,6 +63,12 @@
 <td style="text-align: center;">${no - status.index}</td> <!-- 게시물 내림차순 정렬 -->
   <td>
    <a href="javascript:goView('${article.articleNo }')">${article.title }</a>
+   <c:if test="${article.attachFileNum > 0 }">
+    	<img src="../resources/images/attach.png" alt="첨부파일" />
+   </c:if>
+   <c:if test="${article.commentNum > 0 }">
+    	<span class="bbs-strong">[${article.commentNum }]</span>
+   </c:if>
   </td>
   <td style="text-align: center;">${article.writeDate }</td>
   <td style="text-align: center;">${article.hit }</td>

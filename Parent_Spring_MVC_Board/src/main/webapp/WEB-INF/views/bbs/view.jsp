@@ -11,35 +11,78 @@
 <title>${boardNm }</title>
 <script type="text/javascript">
 //<![CDATA[
-           
-  function goList(page) {
-  var form = document.getElementById("listForm");
-  form.curPage.value = page;
-  form.submit();
- }          
- function goWrite() {
-  var form = document.getElementById("writeForm");
-  form.submit();
- }
- 
- function goView(articleNo) {
-  var form = document.getElementById("viewForm");
-  form.articleNo.value = articleNo;
-  form.submit();
-  
- }
- function goModify(){
-  var form = document.getElementById("modifyForm");
-  form.submit();
-  
- }
- function goDelete(){
-  var form = document.getElementById("deleteForm");
-  form.submit();
-  
- }
- 
-//]]>
+   
+
+	function download(filename) {
+		var form = document.getElementById("downForm")
+		form.filename.value = filename;
+		form.submit();
+	}
+
+	function deleteComment(commentNo) {
+		var chk = confirm("정말로 삭제하시겠습니까?");
+		if (chk == true) {
+			var form = document.getElementById("deleteCommentForm");
+			form.commentNo.value = commentNo;
+			form.submit();
+		}
+	}
+
+	function updateComment(no) {
+		var commentno = "comment" + no;
+		var formno = "modifyCommentForm" + no;
+		var pele = document.getElementById(commentno);
+		var formele = document.getElementById(formno);
+		var pdisplay;
+		var formdisplay;
+		if (pele.style.display) {
+			pdisplay = '';
+			formdisplay = 'none';
+		} else {
+			pdisplay = 'none';
+			formdisplay = '';
+		}
+		pele.style.display = pdisplay;
+		formele.style.display = formdisplay;
+	}
+
+	function deleteAttachFile(attachFileNo) {
+		var chk = confirm("정말로 삭제하시겠습니까?");
+		if (chk == true) {
+			var form = document.getElementById("deleteAttachFileForm");
+			form.attachFileNo.value = attachFileNo;
+			form.submit();
+		}
+	}
+
+	function goList(page) {
+		var form = document.getElementById("listForm");
+		form.curPage.value = page;
+		form.submit();
+	}
+	function goWrite() {
+		var form = document.getElementById("writeForm");
+		form.submit();
+	}
+
+	function goView(articleNo) {
+		var form = document.getElementById("viewForm");
+		form.articleNo.value = articleNo;
+		form.submit();
+
+	}
+	function goModify() {
+		var form = document.getElementById("modifyForm");
+		form.submit();
+
+	}
+	function goDelete() {
+		var form = document.getElementById("deleteForm");
+		form.submit();
+
+	}
+
+	//]]>
 </script>  
 </head>
 <body>
@@ -73,8 +116,69 @@
  <div id="gul-content">
   <h6>작성자 ${thisArticle.email }, 조회수 ${thisArticle.hit }</h6>
   <p>${thisArticle.htmlContent }</p>
-
+    <p id="file-list" style="text-align: right;">
+   <c:forEach var="file" items="${attachFileList }" varStatus="status">
+	<a href="javascript:download('${file.filename }')">${file.filename }</a>
+   <input type="button" value="x" onclick="deleteAttachFile('${file.attachFileNo }')" />
+   <br />
+   </c:forEach> 
+  </p>
  </div>
+ 
+ <!--  덧글 반복 시작 -->
+					<c:forEach var="comment" items="${commentList }" varStatus="status">
+						<div class="comments">
+							<h4>${comment.email }</h4>
+							<h5>${comment.regdate }</h5>
+							<h6>
+								<a href="javascript:updateComment('${comment.commentNo }')">수정</a>
+								| <a href="javascript:deleteComment('${comment.commentNo }')">삭제</a>
+							</h6>
+							<p id="comment${comment.commentNo }">${comment.htmlMemo }</p>
+
+							<div class="modify-comment">
+								<form id="modifyCommentForm${comment.commentNo }"
+									action="commentUpdate" method="post" style="display: none;">
+									<p>
+										<input type="hidden" name="commentNo"
+											value="${comment.commentNo }" /> <input type="hidden"
+											name="boardCd" value="${param.boardCd }" /> <input
+											type="hidden" name="articleNo" value="${param.articleNo }" />
+										<input type="hidden" name="curPage" value="${param.curPage }" />
+										<input type="hidden" name="searchWord"
+											value="${param.searchWod }" />
+									</p>
+									<div class="fr">
+										<a
+											href="javascript:document.forms.modifyCommentForm${comment.commentNo }.submit()">수정하기</a>
+										| <a href="javascript:updateComment('${comment.commentNo }')">취소</a>
+									</div>
+									<div>
+										<textarea class="modify-comment-ta" name="memo" rows="7"
+											cols="50">${comment.memo }</textarea>
+									</div>
+								</form>
+							</div>
+						</div>
+					</c:forEach>
+					<!--  덧글 반복 끝 -->
+ 
+ <form id="addCommentForm" action="commentAdd" method="post">
+  <p style="margin: 0;padding: 0;">
+   <input type="hidden" name="articleNo" value="${param.articleNo }" />
+   <input type="hidden" name="boardCd" value="${param.boardCd }" />
+   <input type="hidden" name="curPage" value="${param.curPage }" />
+   <input type="hidden" name="searchWord" value="${param.searchWord }" />
+  </p>
+  <div id="addComment">
+   <textarea name="memo" rows="7" cols="50"></textarea>
+  </div>
+  <div style="text-align: right;">
+   <input type="submit" value="덧글남기기" />
+  </div>
+ </form>
+ 
+ 
  
  <div id="next-prev">
   <c:if test="${nextArticle != null }">
@@ -106,21 +210,27 @@
  <!--  반복 구간 시작 -->
  <c:forEach var="article" items="${list }" varStatus="status"> 
  <tr>
-  <td style="text-align: center;">
-   <c:choose>
-    <c:when test="${param.articleNo == article.articleNo }">
-     <img src="../resources/images/arrow.gif" alt="현재글" />
-    </c:when>
-    <c:otherwise>
-     ${no - status.index }
-    </c:otherwise>
-   </c:choose>
-  </td>
-  <td>
-   <a href="javascript:goView('${article.articleNo }')">${article.title }</a>
-  </td>
-  <td style="text-align: center;">${article.writeDate }</td>
-  <td style="text-align: center;">${article.hit }</td>
+	  <td style="text-align: center;">
+	   <c:choose>
+	    <c:when test="${param.articleNo == article.articleNo }">
+	     <img src="../resources/images/arrow.gif" alt="현재글" />
+	    </c:when>
+	    <c:otherwise>
+	     ${no - status.index }
+	    </c:otherwise>
+	   </c:choose>
+	  </td>
+	  <td>
+	   <a href="javascript:goView('${article.articleNo }')">${article.title }</a>
+	      <c:if test="${article.attachFileNum > 0 }">
+	    <img src="../resources/images/attach.png" alt="첨부파일" />
+	   </c:if>
+	      <c:if test="${article.commentNum > 0 }">
+	    <span class="bbs-strong">[${article.commentNum }]</span> 
+	   </c:if>
+	  </td>
+	  <td style="text-align: center;">${article.writeDate }</td>
+	  <td style="text-align: center;">${article.hit }</td>
  </tr>
  </c:forEach>
  <!--  반복 구간 끝 -->
@@ -188,6 +298,12 @@
 </div>
 
 <div id="form-group" style="display: none;">
+	 <form id="downForm" action="./download" method="post">
+	  <p>
+	   <input type="hidden" name="filename">
+	  <p>  
+	 </form>
+
  <form id="listForm" action="./list" method="get">
   <p>
    <input type="hidden" name="boardCd" value="${param.boardCd }" />
@@ -202,32 +318,51 @@
  </p>
  </form>
  
- <form id="viewForm" action="./view" method="get">
- <p>
-  <input type="hidden" name="articleNo" />
-  <input type="hidden" name="boardCd" value="${param.boardCd }" />
-  <input type="hidden" name="curPage" value="${param.curPage }" />
-  <input type="hidden" name="searchWord" value="${param.searchWord }" />
- </p>
+	 <form id="viewForm" action="./view" method="get">
+	 <p>
+	  <input type="hidden" name="articleNo" />
+	  <input type="hidden" name="boardCd" value="${param.boardCd }" />
+	  <input type="hidden" name="curPage" value="${param.curPage }" />
+	  <input type="hidden" name="searchWord" value="${param.searchWord }" />
+	 </p>
+	 </form>
+	 
+	 <form id="modifyForm" action="./modify" method="get">
+	 <p>
+	  <input type="hidden" name="articleNo" value="${param.articleNo }"/>
+	  <input type="hidden" name="boardCd" value="${param.boardCd }" />
+	  <input type="hidden" name="curPage" value="${param.curPage }" />
+	  <input type="hidden" name="searchWord" value="${param.searchWord }" />
+	 </p>
+	 </form>
+	 
+	 <form id="deleteForm" action="./delete" method="post">
+	 <p>
+	  <input type="hidden" name="articleNo" value="${param.articleNo }"/>
+	  <input type="hidden" name="boardCd" value="${param.boardCd }" />
+	  <input type="hidden" name="curPage" value="${param.curPage }" />
+	   <input type="hidden" name="searchWord" value="${param.searchWord }" />
+	 </p>
+	 </form>
+	 
+	  <form id="deleteAttachFileForm" action="attachFileDel" method="post">
+	  <p>
+	   <input type="hidden" name="attachFileNo" />
+	   <input type="hidden" name="articleNo" value="${param.articleNo }" />
+	   <input type="hidden" name="boardCd" value="${param.boardCd }" />
+	   <input type="hidden" name="curPage" value="${param.curPage }" />
+	   <input type="hidden" name="searchWord" value="${param.searchWord }" />
+	  </p>
  </form>
- 
- <form id="modifyForm" action="./modify" method="get">
- <p>
-  <input type="hidden" name="articleNo" value="${param.articleNo }"/>
-  <input type="hidden" name="boardCd" value="${param.boardCd }" />
-  <input type="hidden" name="curPage" value="${param.curPage }" />
-  <input type="hidden" name="searchWord" value="${param.searchWord }" />
- </p>
- </form>
- 
- <form id="deleteForm" action="./delete" method="post">
- <p>
-  <input type="hidden" name="articleNo" value="${param.articleNo }"/>
-  <input type="hidden" name="boardCd" value="${param.boardCd }" />
-  <input type="hidden" name="curPage" value="${param.curPage }" />
+  <form id="deleteCommentForm" action="commentDel" method="post">
+  <p>
+   <input type="hidden" name="commentNo" />
+   <input type="hidden" name="articleNo" value="${param.articleNo }" />
+   <input type="hidden" name="boardCd" value="${param.boardCd }" />
+   <input type="hidden" name="curPage" value="${param.curPage }" />
    <input type="hidden" name="searchWord" value="${param.searchWord }" />
- </p>
- </form> 
+  </p>
+ </form>
 </div>
 
 </body>

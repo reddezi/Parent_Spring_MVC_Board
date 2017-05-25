@@ -5,23 +5,31 @@
  
 <mapper namespace="net.my.mybatis.BoardMapper">
  	
-	 <select id="getArticleList" parameterType="hashmap" resultType="Article">
-	  SELECT articleno, title, regdate, hit 
-	  FROM (
-	   SELECT rownum r, a.* 
-	    FROM (
-	     SELECT articleno, title, regdate, hit 
-	     FROM article 
-	     WHERE boardcd = #{boardCd} 
-	     <if test="searchWord != null">
-	     AND (title LIKE '%${searchWord}%' OR
-	     content LIKE '%${searchWord}%')
-	     </if> 
-	     ORDER BY articleno DESC
-	    ) a
-	  )
-	  WHERE r BETWEEN #{start} AND #{end}
-	 </select>
+ <select id="getArticleList" parameterType="hashmap" resultType="Article">
+  SELECT articleno, title, regdate, hit, attachfilenum, commentnum 
+  FROM (
+   SELECT rownum r, a.* 
+    FROM (
+     SELECT 
+      a.articleno, title, a.regdate, hit, 
+      count(distinct(f.attachfileno)) attachfilenum,
+      count(distinct(c.commentno)) commentnum
+     FROM 
+      article a, attachfile f, comments c
+     WHERE 
+      a.articleno = f.articleno(+) AND 
+      a.articleno = c.articleno(+) AND
+      boardcd = #{boardCd} 
+     <if test="searchWord != null">
+     AND (title LIKE '%${searchWord}%' OR
+     content LIKE '%${searchWord}%')
+     </if>
+     GROUP BY a.articleno, title, a.regdate, hit 
+     ORDER BY articleno DESC
+    ) a
+  )
+  WHERE r BETWEEN #{start} AND #{end}
+ </select>
  
  <select id="getTotalRecord" parameterType="hashmap" resultType="int">
   SELECT count(*) FROM article WHERE boardcd = #{boardCd}
@@ -84,5 +92,56 @@
 		ORDER BY articleno) a)
 		WHERE r = 1
 	</select>
+	
+	 <select id="getNewArticle" resultType="Article">
+	  SELECT articleno, title, content, email, hit, regdate
+	  FROM (SELECT * FROM ARTICLE ORDER BY articleno DESC) 
+	  WHERE ROWNUM = 1
+	 </select> 
+	 
+	 <insert id="insertAttachFile" parameterType="AttachFile">
+	  INSERT INTO attachfile (attachfileno, filename, filetype, filesize, articleno)
+	  VALUES
+	  (seq_attachfile.nextval, #{filename}, #{filetype}, #{filesize}, #{articleNo})
+	 </insert> 
+	
+	 <select id="getAttachFileList" parameterType="int" resultType="AttachFile">
+	  SELECT attachfileno, filename, filetype, filesize, articleno 
+	  FROM attachfile 
+	  WHERE articleno = #{articleNo} 
+	  ORDER BY attachfileno
+	 </select>
+	
+	 <delete id="deleteFile" parameterType="int">
+	  DELETE FROM attachfile WHERE attachfileno = #{attachFileNo}
+	 </delete>
+      
+      <!--댓글 DB  -->
+       <insert id="insertComment" parameterType="Comment">
+		  INSERT INTO comments (commentno, articleno, email, memo, regdate)
+		  VALUES (seq_comments.nextval, #{articleNo}, #{email}, #{memo}, sysdate)
+		 </insert>
+		 
+		 <update id="updateComment" parameterType="Comment">
+		  UPDATE comments SET memo = #{memo} WHERE commentno = #{commentNo}
+		 </update>
+		 
+		 <delete id="deleteComment" parameterType="int">
+		  DELETE FROM comments WHERE commentno = #{commentNo}
+		 </delete>
+		 
+		 <select id="getComment" parameterType="int" resultType="Comment">
+		  SELECT commentno,articleno,email,memo,regdate 
+		  FROM comments 
+		  WHERE commentno = #{commentNo}
+		 </select>
+		 
+		 <select id="getCommentList" parameterType="int" resultType="Comment">
+		  SELECT commentno, articleno, email, memo, regdate
+		  FROM comments
+		  WHERE articleno = #{articleNo}
+		  ORDER BY commentno DESC
+		 </select>
+      
       
 </mapper>
