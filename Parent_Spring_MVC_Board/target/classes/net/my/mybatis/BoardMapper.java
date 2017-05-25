@@ -11,6 +11,11 @@ public interface BoardMapper {
      */
     public ArrayList<Article> getArticleList(HashMap<String, String> hashmap);
     /*
+     * 특정 게시판의 총 게시물 갯수 구하기
+     */
+    public int getTotalRecord(HashMap<String, String> hashmap);
+    
+    /*
      * 새로운 게시글 추가
      */
     public int insert(Article article);
