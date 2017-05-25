@@ -63,7 +63,14 @@ public class Article {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         return sdf.format(regdate);
     }
-	
+    // 아래코드를 적용하여 view.jsp 에서 ${getHtmlContent}로 사용
+    public static final String ENTER = System.getProperty("line.separator");
+    public String getHtmlContent() {
+        if (content != null) {
+            return content.replaceAll(ENTER, "<br />");
+        }
+        return null;  
+    }
 	
 	
 }

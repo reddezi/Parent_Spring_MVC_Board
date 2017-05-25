@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1 style="float: left;width: 150px;"><a href="/ShotPlace"><img src="/ShotPlace/resources/images/ci.gif" alt="java-school logo" /></a></h1>
+<h1 style="float: left;width: 150px;"><a href="/ShotPlace"><img src="/ShotPlace/resources/images/ci.gif" alt="부모게시판" /></a></h1>
  
 <div id="memberMenu" style="float: right;position: relative;top: 7px;">
 <c:choose>

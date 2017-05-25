@@ -7,14 +7,17 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<ol
-		style="line-height: 19.2000007629395px; white-space: normal; margin-top: 0px;">
-		<ul id="nav">
-			<li><a href="/ShotPlace">소개</a></li>
-			<li><a href="/ShotPlace/bbs/list">게시판</a></li>
-			<li><a href="#">회원정보</a></li>
-			<li><a href="#">기타등등</a></li>
-		</ul>
-	</ol>
+	<h1>게시판</h1>
+<ul>
+    <li>
+        <ul>
+            <li><a href="list?boardCd=free">자유게시판</a></li>
+            <li><a href="list?boardCd=qna">QnA게시판</a></li>
+            <li><a href="list?boardCd=data">자료실</a></li>
+        </ul>
+    </li>
+</ul>
+	
+	
 </body>
 </html>

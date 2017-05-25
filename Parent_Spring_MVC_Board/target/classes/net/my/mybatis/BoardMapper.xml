@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="net.my.mybatis.BoardMapper">
+ 
+    <select id="getArticleList" parameterType="hashmap" resultType="Article">
+    SELECT articleno, title, regdate, hit from article FROME WHERE boardcd = #{boardCd}
+    </select>
+    <insert id="insert" parameterType="Article">
+        INSERT INTO article (articleno, boardcd, title, content, email, hit, regdate)
+        VALUES
+        (seq_article.nextval, #{boardCd}, #{title}, #{content}, #{email}, 0, sysdate)
+    </insert>
+ 
+    <update id="update" parameterType="Article">
+        UPDATE article
+        SET title=#{title},content=#{content}
+        WHERE articleno=#{articleNo}
+    </update>
+   
+    <delete id="delete" parameterType="int">
+        DELETE FROM article WHERE articleno = #{articleNo}
+    </delete>
+
+    <select id="getBoardNm" parameterType="string" resultType="string">
+        SELECT boardNm FROM board WHERE boardcd = #{boardCd}
+    </select>  
+    
+     <update id="increaseHit" parameterType="int">
+        UPDATE article SET hit = hit + 1 WHERE articleno = #{articleNo}
+    </update>
+   
+    <resultMap type="Article" id="ArticleClob"><!--이해 안됨  다시 분석  -->
+        <result property="content"  column="content"  jdbcType="CLOB" javaType="java.lang.String"/>
+    </resultMap>
+   
+    <select id="getArticle" parameterType="int" resultMap="ArticleClob">
+        SELECT articleno, title, content, email, hit, regdate
+        FROM article
+        WHERE articleno = #{articleNo}
+    </select>
+    
+    <select id="getPrevArticle" parameterType="hashmap" resultType="Article">
+		SELECT articleno, title
+		FROM
+		(SELECT rownum r,a.*
+		FROM
+		(SELECT articleno, title FROM article WHERE boardCd = #{boardCd} AND articleno &lt; #{articleNo}
+		ORDER BY articleno DESC) a)
+		WHERE r = 1
+	</select>
+		
+	<select id="getNextArticle" parameterType="hashmap" resultType="Article">
+		SELECT articleno, title
+		FROM
+		(SELECT rownum r,a.*
+		FROM
+		(SELECT articleno, title FROM article WHERE boardCd = #{boardCd} AND articleno &gt; #{articleNo}
+		ORDER BY articleno) a)
+		WHERE r = 1
+	</select>
+      
+</mapper>

@@ -12,7 +12,7 @@ import net.my.mybatis.BoardMapper;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-	@Autowired
+	    @Autowired
 	    private BoardMapper boardMapper;
 	   
 	    /*
@@ -52,6 +52,35 @@ public class BoardServiceImpl implements BoardService {
 	     */
 	    public String getBoardNm(String boardCd){
 	        return boardMapper.getBoardNm(boardCd);
-	    }   
+	    }
+
+		@Override
+		public void increaseHit(int articleNo) {
+			 boardMapper.increaseHit(articleNo);
+			
+		}
+
+		@Override
+		public Article getArticle(int articleNo) {
+			return boardMapper.getArticle(articleNo);
+		}
+
+		@Override
+		public Article getPrevArticle(int articleNo, String boardCd) {
+			HashMap<String, String> hashmap = new HashMap<String, String>();
+			Integer no = articleNo;
+			hashmap.put("articleNo", no.toString());
+			hashmap.put("boardCd", boardCd);
+			return boardMapper.getPrevArticle(hashmap);
+		}
+
+		@Override
+		public Article getNextArticle(int articleNo, String boardCd) {
+			HashMap<String, String> hashmap = new HashMap<String, String>();
+			Integer no = articleNo;
+			hashmap.put("articleNo", no.toString());
+			hashmap.put("boardCd", boardCd);
+			return boardMapper.getNextArticle(hashmap);
+		}   
 
 }
