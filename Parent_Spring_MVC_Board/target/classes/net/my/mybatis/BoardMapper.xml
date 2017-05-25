@@ -13,15 +13,23 @@
 	     SELECT articleno, title, regdate, hit 
 	     FROM article 
 	     WHERE boardcd = #{boardCd} 
+	     <if test="searchWord != null">
+	     AND (title LIKE '%${searchWord}%' OR
+	     content LIKE '%${searchWord}%')
+	     </if> 
 	     ORDER BY articleno DESC
 	    ) a
 	  )
 	  WHERE r BETWEEN #{start} AND #{end}
 	 </select>
-	 
-	 <select id="getTotalRecord" parameterType="hashmap" resultType="int">
-	  SELECT count(*) FROM article WHERE boardcd = #{boardCd}
-	 </select> 
+ 
+ <select id="getTotalRecord" parameterType="hashmap" resultType="int">
+  SELECT count(*) FROM article WHERE boardcd = #{boardCd}
+     <if test="searchWord != null">
+     AND (title LIKE '%${searchWord}%' OR
+     content LIKE '%${searchWord}%')
+     </if>
+ </select> 
 
     <insert id="insert" parameterType="Article">
         INSERT INTO article (articleno, boardcd, title, content, email, hit, regdate)

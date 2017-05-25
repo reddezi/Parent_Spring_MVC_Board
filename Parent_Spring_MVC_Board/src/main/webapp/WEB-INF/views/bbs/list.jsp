@@ -10,6 +10,7 @@
 <title>${boardNm }</title>
 <script type="text/javascript">
 //<![CDATA[
+	
  function goList(page) {
   var form = document.getElementById("listForm");
   form.curPage.value = page;
@@ -97,6 +98,18 @@
  <div id="list-menu" style="text-align:  right;">
   <input type="button" value="새글쓰기" onclick="goWrite()" />
  </div>
+ 
+  <div id="search" style="text-align: center;">
+	  <form id="searchForm" action="./list" method="get" style="margin: 0;padding: 0;">
+	   <p style="margin: 0;padding: 0;">
+	    <input type="hidden" name="boardCd" value="${boardCd }" />
+	    <input type="text" name="searchWord" size="15" maxlength="30" />
+	    <input type="submit" value="검색" />
+	   </p> 
+	  </form>
+  
+ </div>
+ 
 </div>
 <!--  본문 끝 -->
 
@@ -122,6 +135,7 @@
   <p>
    <input type="hidden" name="boardCd" value="${boardCd }" />
    <input type="hidden" name="curPage" />
+   <input type="hidden" name="searchWord" value="${param.searchWord }" />
   </p>
  </form>
  
@@ -129,6 +143,7 @@
  <p>
   <input type="hidden" name="boardCd" value="${boardCd }" />
   <input type="hidden" name="curPage" value="${curPage }" />
+  <input type="hidden" name="searchWord" value="${param.searchWord }" />
  </p>
  </form>
  
@@ -137,6 +152,7 @@
   <input type="hidden" name="articleNo" />
   <input type="hidden" name="boardCd" value="${boardCd }" />
   <input type="hidden" name="curPage" value="${curPage }" />
+   <input type="hidden" name="searchWord" value="${param.searchWord }" />
  </p>
  </form>
 </div>

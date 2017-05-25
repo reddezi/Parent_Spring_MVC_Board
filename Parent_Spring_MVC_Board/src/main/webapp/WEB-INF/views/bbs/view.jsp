@@ -150,10 +150,24 @@
   
  </div> 
  
- <div id="list-menu" style="text-align:  right;">
-  <input type="button" value="새글쓰기" onclick="goWrite()" />
- </div>
-</div>
+	 <div id="list-menu" style="text-align:  right;">
+	  <input type="button" value="새글쓰기" onclick="goWrite()" />
+	 </div>
+	 
+	  <div id="search" style="text-align: center;">
+	  <form id="searchForm" action="./list" method="get" style="margin: 0;padding: 0;">
+	   <p style="margin: 0;padding: 0;">
+	    <input type="hidden" name="boardCd" value="${param.boardCd }" />
+	    <input type="text" name="searchWord" size="15" maxlength="30" />
+	    <input type="submit" value="검색" />
+	   </p> 
+	  </form>
+	 </div> 
+ 
+ 
+ 
+ 
+</div> <!-- Div End -->
 <!--  본문 끝 -->
 
   </div><!-- content 끝 -->
@@ -178,6 +192,7 @@
   <p>
    <input type="hidden" name="boardCd" value="${param.boardCd }" />
    <input type="hidden" name="curPage" />
+    <input type="hidden" name="searchWord" value="${param.searchWord }" />
   </p>
  </form>
  
@@ -192,6 +207,7 @@
   <input type="hidden" name="articleNo" />
   <input type="hidden" name="boardCd" value="${param.boardCd }" />
   <input type="hidden" name="curPage" value="${param.curPage }" />
+  <input type="hidden" name="searchWord" value="${param.searchWord }" />
  </p>
  </form>
  
@@ -200,14 +216,16 @@
   <input type="hidden" name="articleNo" value="${param.articleNo }"/>
   <input type="hidden" name="boardCd" value="${param.boardCd }" />
   <input type="hidden" name="curPage" value="${param.curPage }" />
+  <input type="hidden" name="searchWord" value="${param.searchWord }" />
  </p>
  </form>
  
  <form id="deleteForm" action="./delete" method="post">
  <p>
-  <input type="hidden" name="articleNo" value="${param.articleNo }"/> />
+  <input type="hidden" name="articleNo" value="${param.articleNo }"/>
   <input type="hidden" name="boardCd" value="${param.boardCd }" />
   <input type="hidden" name="curPage" value="${param.curPage }" />
+   <input type="hidden" name="searchWord" value="${param.searchWord }" />
  </p>
  </form> 
 </div>
